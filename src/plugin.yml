@@ -14,6 +14,9 @@ commands:
     whosafk:
         usage: /whosafk
         description: List the players who are AFK.
+    whoisafk:
+        usage: /whoisafk
+        description: List the players who are AFK. (same as /whosafk)
     setafk:
         usage: /setafk <player>
         description: Set someone else AFK

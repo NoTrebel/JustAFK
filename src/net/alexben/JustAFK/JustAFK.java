@@ -172,6 +172,10 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
 			}
 		}
     	
+    	if(args.length != 1) {
+    		return false;
+    	}
+    	
     	Player editing = Bukkit.getPlayer(args[0]);
 
         if (editing != null) {
@@ -189,7 +193,7 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
 
             return true;
         } else {
-        	JUtility.sendMessage(sender, ChatColor.RED + "/setafk <player>");
+        	JUtility.sendMessage(sender, ChatColor.RED + "Player not found");
         }
     	return false;
     }
