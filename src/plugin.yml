@@ -1,0 +1,32 @@
+name: JustAFK2
+description: A simple, yet powerful, AFK (away from keyboard) plugin
+main: net.alexben.JustAFK.JustAFK
+version: 2.0
+author: _Alex, bog500, HmmmQuestionMark
+website: http://www.google.com
+commands:
+    afk:
+        usage: /afk [reason]
+        description: Set yourself as AFK
+    justafk:
+        usage: /justafk
+        description: Plugin description
+    whosafk:
+        usage: /whosafk
+        description: List the players who are AFK.
+    setafk:
+        usage: /setafk <player>
+        description: Set someone else AFK
+permissions:
+    justafk.afk:
+        description: Set yourself as AFK
+        default: true
+    justafk.whosafk:
+        description: List the players who are AFK.
+        default: true
+    justafk.setafk:
+        description: Set someone else AFK
+        default: op
+    justafk.immune:
+        description: Makes the player immune to automatic kicking.
+        default: op

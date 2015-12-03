@@ -5,7 +5,7 @@ tagmessages: true
 autokick: true
 hideawayplayers: true
 broadcastawaymsg: true
-movementcheckfreq: 30 #seconds
-kicktime: 60 #seconds
+movementcheckfreq: 180 #seconds
+kicktime: 900 #seconds
 kickreason: '&cYou were inactive for too long!'
 kickwhileinvehicle: true

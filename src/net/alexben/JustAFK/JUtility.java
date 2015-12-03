@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -18,8 +19,11 @@ public class JUtility {
     private static JustAFK plugin = null;
     private static final ConcurrentMap<String, ConcurrentMap<String, Object>> save = new ConcurrentHashMap<>();
 
+    private static String messagePrefix;
+    
     JUtility(JustAFK instance) {
         plugin = instance;
+        messagePrefix = ChatColor.ITALIC + "" + ChatColor.GRAY + "[" + ChatColor.GREEN + plugin.getDescription().getName()+ ChatColor.GRAY + "]" + ChatColor.RESET;
     }
 
     /**
@@ -39,12 +43,23 @@ public class JUtility {
     /**
      * Sends a message to a player prepended with the plugin name.
      *
-     * @param player the player to message.
-     * @param msg    the message to send.
+     * @param 			 player the player to message.
+     * @param msg    	 the message to send.
      */
-    public static void sendMessage(Player player, String msg) {
-        if (plugin.getConfig().getBoolean("tagmessages")) {
-            player.sendMessage("[JustAFK] " + msg);
+    public static void sendMessage(CommandSender player, String msg) {
+        sendMessage(player, msg, plugin.getConfig().getBoolean("tagmessages"));
+    }
+    
+    /**
+     * Sends a message to a player prepended with the plugin name.
+     *
+     * @param 			 player the player to message.
+     * @param msg    	 the message to send.
+     * @param showTag    show or hide plugin name tag.
+     */
+    public static void sendMessage(CommandSender player, String msg, boolean showTag) {
+        if (showTag) {
+            player.sendMessage(messagePrefix + " " + msg);
         } else {
             player.sendMessage(msg);
         }

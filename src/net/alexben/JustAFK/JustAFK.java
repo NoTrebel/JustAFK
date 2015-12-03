@@ -22,10 +22,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
     public static ConfigAccessor language;
+    
+    private static String noPermission = ChatColor.RED + "You are not permitted to do this!";
 
     @Override
     public void onEnable() {
@@ -52,6 +55,7 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
         getCommand("afk").setExecutor(this);
         getCommand("justafk").setExecutor(this);
         getCommand("whosafk").setExecutor(this);
+        getCommand("whoisafk").setExecutor(this);
         getCommand("setafk").setExecutor(this);
 
         // Start metrics
@@ -78,95 +82,138 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
         }
 
         // Log that JustAFK successfully loaded
-        getLogger().info("JustAFK has been successfully enabled!");
+        getLogger().info(this.getDescription().getName() + " " + this.getDescription().getVersion() + " Enabled!");
     }
 
     @Override
     public void onDisable() {
         getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll((Plugin) this);
-        getLogger().info("JustAFK has been disabled!");
+        getLogger().info(this.getDescription().getName() + " Disabled!");
     }
 
+    protected boolean onAfkCommand(CommandSender sender, String[] args) {
+    	
+    	if (sender instanceof Player) {
+			Player player = (Player) sender;
+			if (!player.hasPermission("justafk.afk")) {
+				sender.sendMessage(noPermission);
+				return true;
+			}
+		
+    	
+    	if (JUtility.isAway(player)) {
+            JUtility.setAway(player, false, true);
+            JUtility.sendMessage(player, ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.
+                    getConfig().getString("private_return")));
+
+            return true;
+        }
+
+        // If they included an away message then set it BEFORE setting away.
+        if (args.length > 0) {
+            String msg = StringUtils.join(args, " ");
+
+            JUtility.setAwayMessage(player, msg);
+        }
+
+        // Now set away status
+        JUtility.setAway(player, true, true);
+
+        // Send the messages.
+        JUtility.sendMessage(player, ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.
+                getConfig().getString("private_away")));
+
+    	}
+    	else {
+    		JUtility.sendMessage(sender, ChatColor.RED + "This command can only be used in-game!");
+    	}
+        return true;
+    	
+        
+
+    }
+    
+    protected boolean onWhosafkCommand(CommandSender sender, String[] args) {
+    	
+    	if (sender instanceof Player) {
+			Player player = (Player) sender;
+			if (!player.hasPermission("justafk.whosafk") && !player.hasPermission("justafk.whoisafk")) {
+				JUtility.sendMessage(sender, noPermission);
+				return true;
+			}
+		}
+    	
+    	if (JUtility.getAwayPlayers(true).isEmpty()) {
+            JUtility.sendMessage(sender, StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                    getString("nobody_away")));
+            return true;
+        }
+
+        List<String> playerNames = JUtility.getAwayPlayers(true).stream().map(Player::getName).
+                collect(Collectors.toList());
+
+        JUtility.sendMessage(sender, ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.
+                getConfig().getString("currently_away")) + " " + StringUtils.join(playerNames, ", "));
+
+        return true;
+    }
+    
+    protected boolean onSetafkCommand(CommandSender sender, String[] args) {
+    	
+    	String sourceName = "SERVER";
+    	
+    	if (sender instanceof Player) {
+			Player player = (Player) sender;
+			sourceName = player.getDisplayName();
+			if (!player.hasPermission("justafk.setafk")) {
+				JUtility.sendMessage(sender, noPermission);
+				return true;
+			}
+		}
+    	
+    	Player editing = Bukkit.getPlayer(args[0]);
+
+        if (editing != null) {
+            if (!JUtility.isAway(editing)) {
+                JUtility.setAway(editing, true, true);
+                JUtility.sendMessage(editing, ChatColor.GRAY + "" + ChatColor.ITALIC +
+                        StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                                getString("setafk_away_private").replace("{name}", sourceName)));
+            } else {
+                JUtility.setAway(editing, false, true);
+                JUtility.sendMessage(editing, ChatColor.GRAY + "" + ChatColor.ITALIC +
+                        StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                                getString("setafk_return_private").replace("{name}", sourceName)));
+            }
+
+            return true;
+        } else {
+        	JUtility.sendMessage(sender, ChatColor.RED + "/setafk <player>");
+        }
+    	return false;
+    }
+    
     /**
      * Handle Commands
      */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player = (Player) sender;
+  
+        if (command.getName().equalsIgnoreCase("afk")) {
+            return onAfkCommand(sender, args);
+        } else if (command.getName().equalsIgnoreCase("whosafk") || command.getName().equalsIgnoreCase("whoisafk")) {
+        	return onWhosafkCommand(sender, args);
+        } else if (command.getName().equalsIgnoreCase("setafk")) {
+        	return onSetafkCommand(sender, args);
+        } else if (command.getName().equalsIgnoreCase("justafk")) {
+        	JUtility.sendMessage(sender, ChatColor.AQUA + this.getDescription().getName() + " " + ChatColor.GRAY + this.getDescription().getDescription());
+        	JUtility.sendMessage(sender, ChatColor.GRAY + "Authors: " + ChatColor.AQUA + this.getDescription().getAuthors().toString().replace("[", "").replace("]", ""));
+        	JUtility.sendMessage(sender, ChatColor.GRAY + "Website: " + ChatColor.AQUA + this.getDescription().getWebsite());
 
-        if (JUtility.hasPermissionOrOP(player, "justafk.basic")) {
-            if (command.getName().equalsIgnoreCase("afk")) {
-                if (JUtility.isAway(player)) {
-                    JUtility.setAway(player, false, true);
-                    JUtility.sendMessage(player, ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.
-                            getConfig().getString("private_return")));
-
-                    return true;
-                }
-
-                // If they included an away message then set it BEFORE setting away.
-                if (args.length > 0) {
-                    String msg = StringUtils.join(args, " ");
-
-                    JUtility.setAwayMessage(player, msg);
-                }
-
-                // Now set away status
-                JUtility.setAway(player, true, true);
-
-                // Send the messages.
-                JUtility.sendMessage(player, ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.
-                        getConfig().getString("private_away")));
-
-                return true;
-            } else if (command.getName().equalsIgnoreCase("whosafk")) {
-                if (JUtility.getAwayPlayers(true).isEmpty()) {
-                    JUtility.sendMessage(player, StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
-                            getString("nobody_away")));
-                    return true;
-                }
-
-                List<String> playerNames = JUtility.getAwayPlayers(true).stream().map(Player::getName).
-                        collect(Collectors.toList());
-
-                JUtility.sendMessage(player, ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.
-                        getConfig().getString("currently_away")) + " " + StringUtils.join(playerNames, ", "));
-
-                return true;
-            } else if (command.getName().equalsIgnoreCase("setafk") && JUtility.hasPermissionOrOP(player,
-                    "justafk.admin")) {
-                Player editing = Bukkit.getPlayer(args[0]);
-
-                if (editing != null) {
-                    if (!JUtility.isAway(editing)) {
-                        JUtility.setAway(editing, true, true);
-                        JUtility.sendMessage(editing, ChatColor.GRAY + "" + ChatColor.ITALIC +
-                                StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
-                                        getString("setafk_away_private").replace("{name}", player.getDisplayName())));
-                    } else {
-                        JUtility.setAway(editing, false, true);
-                        JUtility.sendMessage(editing, ChatColor.GRAY + "" + ChatColor.ITALIC +
-                                StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
-                                        getString("setafk_return_private").replace("{name}", player.getDisplayName())));
-                    }
-
-                    return true;
-                } else {
-                    player.sendMessage(ChatColor.RED + "/setafk <player>");
-                }
-            } else if (command.getName().equalsIgnoreCase("justafk")) {
-                player.sendMessage(ChatColor.AQUA + "JustAFK" + ChatColor.GRAY + " is a plugin created for Bukkit intended for the use");
-                player.sendMessage(ChatColor.GRAY + "of simple - yet powerful - away messages and other features");
-                player.sendMessage(ChatColor.GRAY + "within Minecraft survival multiplayer.");
-                player.sendMessage("");
-                player.sendMessage(ChatColor.GRAY + "Author: " + ChatColor.AQUA + "_Alex");
-                player.sendMessage(ChatColor.GRAY + "Source: " + ChatColor.AQUA +
-                        "http://github.com/alexbennett/Minecraft-JustAFK");
-
-                return true;
-            }
+            return true;
         }
+
 
         return false;
     }
@@ -190,7 +237,8 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     private void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        boolean certain = Boolean.parseBoolean(JUtility.getData(player, "iscertain").toString());
+        Optional<Object> isCertain = JUtility.getData(player, "iscertain");
+        boolean certain = isCertain != null && Boolean.parseBoolean(isCertain.toString());
         boolean yawChange = event.getFrom().getYaw() != event.getTo().getYaw();
         boolean pitchChange = event.getFrom().getPitch() != event.getTo().getPitch();
 
