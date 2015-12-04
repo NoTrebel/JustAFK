@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
     public static ConfigAccessor language;
     
-    private static String noPermission = ChatColor.RED + "You are not permitted to do this!";
-
     @Override
     public void onEnable() {
         new JUtility(this);
@@ -98,7 +96,8 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
     	if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (!player.hasPermission("justafk.afk")) {
-				sender.sendMessage(noPermission);
+				sender.sendMessage(ChatColor.RED + JustAFK.language.
+	                    getConfig().getString("no_permission"));
 				return true;
 			}
 		
@@ -140,7 +139,9 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
     	if (sender instanceof Player) {
 			Player player = (Player) sender;
 			if (!player.hasPermission("justafk.whosafk") && !player.hasPermission("justafk.whoisafk")) {
-				JUtility.sendMessage(sender, noPermission);
+				JUtility.sendMessage(sender, ChatColor.RED + JustAFK.language.
+	                    getConfig().getString("no_permission"));
+								
 				return true;
 			}
 		}
@@ -168,7 +169,8 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
 			Player player = (Player) sender;
 			sourceName = player.getDisplayName();
 			if (!player.hasPermission("justafk.setafk")) {
-				JUtility.sendMessage(sender, noPermission);
+				JUtility.sendMessage(sender, ChatColor.RED + JustAFK.language.
+	                    getConfig().getString("no_permission"));
 				return true;
 			}
 		}
