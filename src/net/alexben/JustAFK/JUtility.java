@@ -23,7 +23,7 @@ public class JUtility {
     
     JUtility(JustAFK instance) {
         plugin = instance;
-        messagePrefix = ChatColor.ITALIC + "" + ChatColor.GRAY + "[" + ChatColor.GREEN + plugin.getDescription().getName()+ ChatColor.GRAY + "]" + ChatColor.RESET;
+        messagePrefix = ChatColor.ITALIC + "" + ChatColor.GRAY + "[" + ChatColor.GREEN + plugin.getDescription().getName()+ ChatColor.GRAY + "] " + ChatColor.RESET;
     }
 
     /**
@@ -33,7 +33,7 @@ public class JUtility {
      */
     public static void serverMsg(String msg) {
         if (plugin.getConfig().getBoolean("tagmessages")) {
-            Bukkit.getServer().broadcastMessage("[JustAFK] " + msg);
+            Bukkit.getServer().broadcastMessage(messagePrefix + msg);
         } else {
             Bukkit.getServer().broadcastMessage(msg);
         }
