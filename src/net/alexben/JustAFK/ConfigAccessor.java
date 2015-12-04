@@ -20,7 +20,7 @@ public class ConfigAccessor {
         this.plugin = plugin;
         this.fileName = fileName;
         this.configFile = new File(plugin.getDataFolder(), fileName);
-
+        plugin.getLogger().info("Localization loaded: " + fileName);
         saveDefaultConfig();
     }
 

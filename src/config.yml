@@ -2,6 +2,7 @@
 tagmessages: true
 
 # AFK-related options
+lang: 'en'
 autokick: true
 hideawayplayers: true
 broadcastawaymsg: true

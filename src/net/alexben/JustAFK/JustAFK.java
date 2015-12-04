@@ -68,7 +68,8 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
         }
 
         // Load the strings/localization
-        language = new ConfigAccessor(this, "localization.yml");
+        String langFile = ("localization.{lang}.yml").replace("{lang}", getConfig().getString("lang"));
+        language = new ConfigAccessor(this, langFile);
 
         // Register all currently online players
         for (Player player : getServer().getOnlinePlayers()) {
