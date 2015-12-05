@@ -233,7 +233,7 @@ public class JUtility {
 
                 if (!active) {
                     // Check for lack of other activity
-                    Long lastActive = Long.parseLong("" + getData(player, "lastactive"));
+                    Long lastActive = Long.parseLong(getData(player, "lastactive").get().toString());
                     Long checkFreq = Long.parseLong("" + plugin.getConfig().getInt("movementcheckfreq")) * 1000;
 
                     if (lastActive >= System.currentTimeMillis() - checkFreq) return;
