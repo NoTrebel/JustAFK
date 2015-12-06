@@ -113,8 +113,9 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
         // If they included an away message then set it BEFORE setting away.
         if (args.length > 0) {
             String msg = StringUtils.join(args, " ");
-
-            JUtility.setAwayMessage(player, msg);
+            if(!msg.equalsIgnoreCase("Optional.empty")) {
+            	JUtility.setAwayMessage(player, msg);
+            }
         }
 
         // Now set away status
