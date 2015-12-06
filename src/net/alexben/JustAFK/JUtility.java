@@ -98,10 +98,11 @@ public class JUtility {
         // Send the server-wide message
         if (plugin.getConfig().getBoolean("broadcastawaymsg")) {
             if (away && certain) {
-                if (getData(player, "message") != null) {
+            	Optional<Object> msg = getData(player, "message");
+                if (msg != null && msg.isPresent()) {
                     serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
                             getString("public_away_reason").replace("{name}", player.getDisplayName()).
-                            replace("{message}", getData(player, "message").toString())));
+                            replace("{message}", msg.get().toString())));
                 } else {
                     serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
                             getString("public_away_generic").replace("{name}", player.getDisplayName())));

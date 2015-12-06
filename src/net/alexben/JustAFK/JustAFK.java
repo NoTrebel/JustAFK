@@ -43,7 +43,7 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
         if (Bukkit.getPluginManager().getPlugin("CommandBook") != null) {
             getLogger().warning("CommandBook has been detected.");
             getLogger().warning("Please ensure that the CommandBook AFK component has been disabled.");
-            getLogger().warning("If this hasn't been done, JustAFK will not work.");
+            getLogger().warning("If this hasn't been done, " + this.getDescription().getName() + " will not work.");
         }
 
         // Register the listeners
@@ -113,9 +113,7 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
         // If they included an away message then set it BEFORE setting away.
         if (args.length > 0) {
             String msg = StringUtils.join(args, " ");
-            if(!msg.equalsIgnoreCase("Optional.empty")) {
-            	JUtility.setAwayMessage(player, msg);
-            }
+            JUtility.setAwayMessage(player, msg);
         }
 
         // Now set away status
