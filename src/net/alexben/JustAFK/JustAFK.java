@@ -244,7 +244,7 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
     private void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         Optional<Object> isCertain = JUtility.getData(player, "iscertain");
-        boolean certain = isCertain != null && Boolean.parseBoolean(isCertain.get().toString());
+        boolean certain = isCertain != null && isCertain.isPresent() && Boolean.parseBoolean(isCertain.get().toString());
         boolean yawChange = event.getFrom().getYaw() != event.getTo().getYaw();
         boolean pitchChange = event.getFrom().getPitch() != event.getTo().getPitch();
 
@@ -280,7 +280,7 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
 
         if (JUtility.isAway(player)) {
         	Optional<Object> isCertain = JUtility.getData(player, "iscertain");
-            boolean certain = isCertain != null && Boolean.parseBoolean(isCertain.get().toString());
+            boolean certain = isCertain != null && isCertain.isPresent() && Boolean.parseBoolean(isCertain.get().toString());
             
             JUtility.setAway(player, false, certain);
             JUtility.sendMessage(player, ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().getString("private_return")));
@@ -296,7 +296,7 @@ public class JustAFK extends JavaPlugin implements CommandExecutor, Listener {
         assert player.isOnline() : player.getName() + " is not online.";
         if (JUtility.isAway(player.getPlayer())) {
         	Optional<Object> isCertain = JUtility.getData(player, "iscertain");
-            boolean certain = isCertain != null && Boolean.parseBoolean(isCertain.get().toString());
+            boolean certain = isCertain != null && isCertain.isPresent() && Boolean.parseBoolean(isCertain.get().toString());
             JUtility.setAway(player.getPlayer(), false, certain);
             JUtility.sendMessage(player.getPlayer(), ChatColor.AQUA + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().getString("private_return")));
         }
