@@ -77,7 +77,13 @@ public class JUtility {
         if (away && certain) {
             if (plugin.getConfig().getBoolean("hideawayplayers")) {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    onlinePlayer.hidePlayer(player);
+                	try {
+                		onlinePlayer.hidePlayer(player);
+                	}catch (Exception ex) 
+                	{
+                		plugin.getLogger().severe(messagePrefix + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                                getString("exception").replace("{playername}", player.getDisplayName()).replace("{onlinename}", onlinePlayer.getDisplayName())));
+                	}
                 }
             }
         } else if (!away) {
@@ -87,7 +93,13 @@ public class JUtility {
             removeData(player, "position");
 
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.showPlayer(player);
+            	try {
+            		onlinePlayer.showPlayer(player);
+            	}catch (Exception ex) 
+            	{
+            		plugin.getLogger().severe(messagePrefix + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                            getString("exception").replace("{playername}", player.getDisplayName()).replace("{onlinename}", onlinePlayer.getDisplayName())));
+            	}
             }
         }
 
@@ -134,7 +146,7 @@ public class JUtility {
                         getString("kickreason")));
 
                 // Log it to the console
-                plugin.getLogger().info(StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                plugin.getLogger().info(messagePrefix + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
                         getString("auto_kick").replace("{name}", player.getDisplayName())));
             }, plugin.getConfig().getInt("kicktime") * 20);
         }
