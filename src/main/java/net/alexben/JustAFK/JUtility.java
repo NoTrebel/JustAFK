@@ -81,7 +81,7 @@ public class JUtility {
                 		onlinePlayer.hidePlayer(player);
                 	}catch (Exception ex) 
                 	{
-                		plugin.getLogger().severe(messagePrefix + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                		plugin.getLogger().severe(messagePrefix + StringEscapeUtils.unescapeJava(plugin.getConfig().
                                 getString("exception").replace("{playername}", player.getDisplayName()).replace("{onlinename}", onlinePlayer.getDisplayName())));
                 	}
                 }
@@ -97,7 +97,7 @@ public class JUtility {
             		onlinePlayer.showPlayer(player);
             	}catch (Exception ex) 
             	{
-            		plugin.getLogger().severe(messagePrefix + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+            		plugin.getLogger().severe(messagePrefix + StringEscapeUtils.unescapeJava(plugin.getConfig().
                             getString("exception").replace("{playername}", player.getDisplayName()).replace("{onlinename}", onlinePlayer.getDisplayName())));
             	}
             }
@@ -112,16 +112,16 @@ public class JUtility {
             if (away && certain) {
             	Optional<Object> msg = getData(player, "message");
                 if (msg != null && msg.isPresent()) {
-                    serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                    serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(plugin.getConfig().
                             getString("public_away_reason").replace("{name}", player.getDisplayName()).
                             replace("{message}", msg.get().toString())));
                 } else {
-                    serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                    serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(plugin.getConfig().
                             getString("public_away_generic").replace("{name}", player.getDisplayName())));
                 }
 
             } else if (!away && certain) {
-                serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                serverMsg(ChatColor.RED + StringEscapeUtils.unescapeJava(plugin.getConfig().
                         getString("public_return").replace("{name}", player.getDisplayName())));
             }
         }
@@ -146,7 +146,7 @@ public class JUtility {
                         getString("kickreason")));
 
                 // Log it to the console
-                plugin.getLogger().info(messagePrefix + StringEscapeUtils.unescapeJava(JustAFK.language.getConfig().
+                plugin.getLogger().info(messagePrefix + StringEscapeUtils.unescapeJava(plugin.getConfig().
                         getString("auto_kick").replace("{name}", player.getDisplayName())));
             }, plugin.getConfig().getInt("kicktime") * 20);
         }
@@ -256,7 +256,7 @@ public class JUtility {
 
                     // Message them
                     player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + StringEscapeUtils.
-                            unescapeJava(JustAFK.language.getConfig().getString("auto_away")));
+                            unescapeJava(plugin.getConfig().getString("auto_away")));
                 }
 
                 saveData(player, "position", player.getLocation());
